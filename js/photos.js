@@ -1,10 +1,10 @@
 
 // photo class
 function Photo(arguments) {
-	console.log(arguments.file);
 	this.file;
 	this.url;
-	this.dataurl;
+	this.imageData;
+
 
 
 	if(!(arguments.file === undefined)){
@@ -13,6 +13,9 @@ function Photo(arguments) {
 	if(!(arguments.url === undefined)) {
 		this.url = arguments.url;
 	}
+	if(!(arguments.imageData === undefined)) {
+		this.imageData = arguments.imageData;
+	}
 }
 
 Photo.prototype.loadFromFile = function(callback) {
@@ -20,17 +23,15 @@ Photo.prototype.loadFromFile = function(callback) {
 	var reader = new FileReader();
 
 	reader.onload = function(e){
-		photo.dataurl = e.target.result;
+		photo.imageData = e.target.result;
 		callback();
 	}
 	
 	reader.readAsDataURL(this.file);
-
 }
 
 // resizing the images
-Photo.prototype.resize = function(x, y) {
-	var img = this;
+Photo.prototype.resize = function(x, y, callback) {  // callback gets resized image
 
 	var canvas = document.createElement('canvas');
 	canvas.width  = x;
@@ -38,10 +39,19 @@ Photo.prototype.resize = function(x, y) {
 	var context = canvas.getContext("2d");
 
 	var image = new Image;
-	image.src = this.dataurl;
+	
 	image.onload = function(){
-		context.drawImage(image, x, y);
+		context.drawImage(image, 0, 0, canvas.width, canvas.height);
+		var imgCanvas = canvas.toDataURL('Image/jpeg',.7);
+		callback(new Photo({imageData: imgCanvas}));
 	}
+
+	image.src = this.imageData;
+}
+
+// upload images
+Photo.prototype.upload = function() {
+
 }
 
 //-----------
@@ -56,7 +66,8 @@ function handleFileSelect(e) {
         photo = new Photo({file: file});
 		photo.loadFromFile(
 			function(){
-				photo.resize(50,50);
+				var callback = function(e) {}
+				photo.resize(250,250, callback);
 			}
 		);
  	} else {
