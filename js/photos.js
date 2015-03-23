@@ -2,7 +2,7 @@
 // photo class
 function Photo(arguments) {
 	this.file;
-	this.url;
+	this.url = "http://www.barkteryneexistuje.cz/wp-content/uploads/Cute-Panda-Bears-animals-34915025-2560-1600.jpg";
 	this.imageData;
 	this.imgWidth;
 	this.imgHeight;
@@ -51,23 +51,7 @@ Photo.prototype.loadFromFile = function(callback) {
 }
 
 // resizing the images
-Photo.prototype.resize = function(x, y) {  // callback gets resized image
-
-	// var canvas = document.createElement('canvas');
-	// canvas.width  = x;
-	// canvas.height = y;
-	// var context = canvas.getContext("2d");
-
-	// var image = new Image;
-	
-	// image.onload = function(){
-	// 	context.drawImage(image, 0, 0, canvas.width, canvas.height);
-	// 	var imgCanvas = canvas.toDataURL('Image/jpeg',.7);
-	// 	callback(new Photo({imageData: imgCanvas}));
-	// }
-
-	// image.src = this.imageData;
-	//var photo = this;
+Photo.prototype.resize = function(x, y) {
 
 	var canvas = document.createElement('canvas');
 
@@ -120,34 +104,43 @@ Photo.prototype.resizeY = function() {
 }
 
 // Resize the Long Edge
+Photo.prototype.resizeLongEdge = function() {
 
+	var bestHeight, bestWidth;
 
+	if(this.imgHeight>this.imgWidth) {
+		photo.resizeY();
+	} else {
+		photo.resizeX();
+	}
+}
 
+Photo.prototype.loadFromUrl = function(callback) {
+	var photos = this;
+
+	var canvas = document.createElement('canvas');
+	var context = canvas.getContext("2d");
+
+	var image = new Image;
+
+	image.onload = function(){
+		canvas.width = image.width;
+		canvas.height = image.height;
+		context.drawImage(image, 0, 0);
+		photo.imageData = canvas.toDataURL('Image/jpeg',.7);
+		photo.imgWidth = image.width;
+		photo.imgHeight = image.height;
+		callback();
+	}
+
+	image.src = this.url;
+	console.log(this.url);
+	console.log(image.width);
+}
 
 //-----------
 
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
-
-// function handleFileSelect(e) {
-// 	var file = e.target.files[0];
-
-// 	if (file.type.match('image.*')) {
-
-//         photo = new Photo({file: file});
-// 		photo.loadFromFile(
-// 			function(){
-// 				var callback = function(e) {
-// 					console.log(e);
-// 				}
-// 				photo.resize(250,250, callback);
-				
-// 			}
-// 		);
-//  	} else {
-//  		alert('not an image');
-//  	}
-	
-// }
 
 function handleFileSelect(e) {
 	var file = e.target.files[0];
@@ -155,10 +148,16 @@ function handleFileSelect(e) {
 	if (file.type.match('image.*')) {
 
         photo = new Photo({file: file});
-		photo.loadFromFile(
+		// photo.loadFromFile(
+		// 	function(){
+
+		// 		Photo.prototype.resizeLongEdge();
+		// 	}
+		// );
+		photo.loadFromUrl(
 			function(){
 
-				photo.resizeX();
+				photo.prototype.resizeLongEdge();
 			}
 		);
  	} else {
