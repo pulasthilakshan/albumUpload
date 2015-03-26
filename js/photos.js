@@ -157,6 +157,8 @@ document.getElementById('files').addEventListener('change', handleFileSelect, fa
 
 
 function handleFileSelect(e) {
+	var hiddenValues = [];
+	document.getElementById("displayArea").innerHTML = "";
 	console.log(e);
 	var file = e.target.files;
 
@@ -170,7 +172,6 @@ function handleFileSelect(e) {
 	}
 
 	var interval;
-	var hiddenValues = [];
 
 	interval = setInterval(function(){
 		var loadingStatus = true;
@@ -186,43 +187,8 @@ function handleFileSelect(e) {
 				document.getElementById("displayArea").appendChild(photo[i].upload().pic);
 				hiddenValues.push(photo[i].upload().eleHidden);
 			}
+			console.log(hiddenValues);
 			document.getElementById("image_data").value = JSON.stringify(hiddenValues);
 		}
 	},1);
-
-	// for(var i=0, f; f=file[i]; i++) {
-	// 	if (f.type.match('image.*')) {
-
-	//         photo.push(new Photo({file: f}));
-	//         photo[i].loadFromFile(
-	// 			function(){
-
-	// 			}
-	// 		);
-	//     }
-	// }
-	// console.log(photo[0].upload().pic);
-	// document.getElementById("displayArea").appendChild(photo[0].upload().pic);
-
-	// 		photo[i].loadFromFile(
-	// 			function(){
-
-	// 				console.log(i);
-	// 				console.log(photo[i-1]);
-	// 				document.getElementById("displayArea").appendChild(photo[i-1].upload().pic);
-	// 				document.getElementById("hiddenArea").appendChild(photo[i-1].upload().eleHidden);
-	// 				// document.createElement("")
-	// 			}
-	// 		);
-	// 		// photo.loadFromUrl(
-	// 		// 	function(){
-
-	// 		// 		photo.prototype.resizeLongEdge();
-	// 		// 	}
-	// 		// );
-	//  	} else {
-	//  		alert('not an image');
-	//  	}
-	// }
-	
 }
